@@ -2,9 +2,11 @@ import MetaDataset from '@/shared/lib/meta-dataset-script'
 import { cn } from '@/shared/lib/utils'
 import Providers from '@/shared/providers'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import { House } from 'lucide-react'
 import type { Metadata, Viewport } from 'next'
 import { Nunito } from 'next/font/google'
-import PromovaIcon from '~/public/promova-icon.svg'
+import Link from 'next/link'
+
 import './globals.css'
 
 const nunito = Nunito({
@@ -56,14 +58,19 @@ export default function RootLayout({
 					`${nunito.className} antialiased flex flex-col justify-center items-center min-h-screen`
 				)}
 			>
-				<PromovaIcon className='fixed inset-0 top-1/2 left-1/2 transform -translate-1/2 blur-xl -z-1' />
 				<Providers>
 					<main className='flex min-h-screen justify-center items-center px-3'>
 						{children}
+						<Link
+							href='/'
+							className='fixed right-3 bottom-3 p-3 rounded-full bg-gradient-to-tl from-neutral-600 to-neutral-700 hover:scale-[1.01]'
+						>
+							<House stroke='white' />
+						</Link>
 					</main>
 				</Providers>
-				<footer className='flex items-center justify-center font-mono text-sm p-12 '>
-					Прав немає, нічого не захищено © 2025
+				<footer className='flex flex-col gap-2 items-center justify-center font-mono text-sm p-12 '>
+					<div>Прав немає, нічого не захищено © 2025</div>
 				</footer>
 
 				{/* Google Analytics */}

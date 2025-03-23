@@ -17,7 +17,7 @@ export function TestErrorButton() {
 
 	return (
 		<Button
-			className='flex items-center space-x-4 rounded-md border p-4'
+			className='flex items-center space-x-4 rounded-md border p-4 bg-gradient-to-tr from-red-300 to-red-400 hover:scale-[1.01]'
 			onClick={() => {
 				setError(true)
 			}}

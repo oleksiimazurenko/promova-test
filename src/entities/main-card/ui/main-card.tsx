@@ -11,8 +11,11 @@ import {
 	CardTitle,
 } from '@/shared/ui/card'
 import { useRouter } from '@bprogress/next'
+import PromovaIcon from '~/public/promova-icon.svg'
 import { FromFacebookButton } from './from-facebook-button'
+import { FromInstagramButton } from './from-instagram-button'
 import { TestErrorButton } from './test-error-button'
+import { TestSentryButton } from './test-sentry-button'
 import { TestStreamingButton } from './test-striaming-button'
 
 type CardProps = React.ComponentProps<typeof Card>
@@ -21,26 +24,36 @@ export function MainCard({ className, ...props }: CardProps) {
 	const router = useRouter()
 
 	return (
-		<Card className={cn('w-max max-w-full sm:w-[380px]', className)} {...props}>
-			<CardHeader>
-				<CardTitle>Вітаю!</CardTitle>
-				<CardDescription>
-					Ви на головній сторінці з якої є тільки один шлях, це пройти quiz, так
-					що у Вас немає варіантів.
-				</CardDescription>
-			</CardHeader>
+		<div className='flex flex-col gap-4 items-center justify-center'>
+			<Card
+				className={cn('w-max max-w-full sm:w-[380px]', className)}
+				{...props}
+			>
+				<CardHeader>
+					<CardTitle className='mx-auto text-2xl'>Вітаю!</CardTitle>
+					<CardDescription className='text-lg mx-auto'>
+						Головна сторінка
+					</CardDescription>
+				</CardHeader>
 
-			<CardContent className='grid gap-4'>
-				<TestErrorButton />
-				<TestStreamingButton />
-				<FromFacebookButton />
-			</CardContent>
+				<CardContent className='grid gap-4'>
+					<TestSentryButton />
+					<TestErrorButton />
+					<TestStreamingButton />
+					<FromFacebookButton />
+					<FromInstagramButton />
+				</CardContent>
 
-			<CardFooter>
-				<Button className='w-full' onClick={() => router.push('/quiz/step-1')}>
-					Почати проходити квіз
-				</Button>
-			</CardFooter>
-		</Card>
+				<CardFooter>
+					<Button
+						className='w-full text-lg'
+						onClick={() => router.push('/quiz/step-1')}
+					>
+						Почати проходити quiz
+					</Button>
+				</CardFooter>
+			</Card>
+			<PromovaIcon className='w-[65px]' />
+		</div>
 	)
 }

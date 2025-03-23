@@ -8,12 +8,12 @@ export function TestStreamingButton() {
 		mockResult: string
 	}> | null>(null)
 
-	const mockResolvedPromise = mockPromise ? use(mockPromise) : null
-	console.log('mockResolvedPromise', mockResolvedPromise)
+	// eslint-disable-next-line 
+	mockPromise && use(mockPromise)
 
 	return (
 		<Button
-			className='flex items-center space-x-4 rounded-md border p-4'
+			className='flex items-center space-x-4 rounded-md border p-4 bg-gradient-to-tl from-neutral-300 to-neutral-500 hover:scale-[1.01]'
 			onClick={() => {
 				setMockPromise(
 					new Promise(resolve => {
@@ -23,7 +23,7 @@ export function TestStreamingButton() {
 					})
 				)
 			}}
-			variant='ghost'
+			variant='default'
 		>
 			<div className='flex-1 space-y-1'>
 				<p className='text-[16px] font-semibold leading-none'>Я Streaming!</p>
