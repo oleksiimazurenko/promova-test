@@ -16,9 +16,7 @@ type PageProps = {
 export async function generateStaticParams() {
 	const steps = await fetchSteps()
 
-	return steps.map(step => ({
-		params: { step: step.slug },
-	}))
+	return steps.map(step => ({ step: step.slug }))
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
@@ -28,7 +26,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 	const promiseAllSteps = fetchSteps()
 
 	return (
-		<Suspense fallback={<Loading/>}>
+		<Suspense fallback={<Loading />}>
 			<QuestionCard
 				step={step}
 				promiseAllSteps={promiseAllSteps}
