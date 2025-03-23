@@ -24,7 +24,7 @@ export function TestErrorButton() {
 			variant='destructive'
 		>
 			<div className='flex-1 space-y-1'>
-				<p className='text-[16px] font-semibold leading-none'>Я помилка!</p>
+				<p className='text-[16px] font-semibold leading-none'>Відтворення помилки!</p>
 			</div>
 		</Button>
 	)

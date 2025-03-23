@@ -23,7 +23,7 @@ export function FromFacebookButton() {
 			variant='default'
 		>
 			<div className='flex-1 space-y-1'>
-				<p className='text-[16px] font-semibold leading-none'>Я з Facebook</p>
+				<p className='text-[16px] font-semibold leading-none'>Перехід з Facebook</p>
 			</div>
 		</Button>
 	)

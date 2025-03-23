@@ -26,7 +26,7 @@ export function TestStreamingButton() {
 			variant='default'
 		>
 			<div className='flex-1 space-y-1'>
-				<p className='text-[16px] font-semibold leading-none'>Я Streaming!</p>
+				<p className='text-[16px] font-semibold leading-none'>Тест Streaming!</p>
 			</div>
 		</Button>
 	)

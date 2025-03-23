@@ -23,7 +23,7 @@ export function FromInstagramButton() {
 			variant='default'
 		>
 			<div className='flex-1 space-y-1'>
-				<p className='text-[16px] font-semibold leading-none'>Я з Instagram</p>
+				<p className='text-[16px] font-semibold leading-none'>Перехід з Instagram</p>
 			</div>
 		</Button>
 	)
