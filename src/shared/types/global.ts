@@ -14,6 +14,7 @@ export type StepType = {
 export type AnswerType = {
   id: number
   value: string
+  nextStep: string | null
 }
 
 export type StrapiImageType = {

@@ -57,6 +57,7 @@ function QuestionCardComponent({
 
 	const { slug, type, question, image } = currentStepData
 
+
 	const [animatedProgress, setAnimatedProgress] = useState(
 		Math.round((previousStep / total) * 100)
 	)
@@ -180,9 +181,9 @@ function QuestionCardComponent({
 				<NextButton
 					total={total}
 					step={step}
-					question={question}
 					savedValue={savedValue}
 					isDisabledNextButton={isDisabledNextButton}
+					currentStepData={currentStepData}
 				/>
 
 				<FinishButton
@@ -210,13 +211,16 @@ export function QuestionCard({
 	const data = use(promiseAllSteps)
 	if (!data) notFound()
 
+	// filter out the _b steps
+	const filteredData = data.filter(stepData => !/_b/.test(stepData.slug))
+
 	const currentStepData = data.find(stepData => stepData.slug === step)
 	if (!currentStepData) notFound()
 
 	return (
 		<QuestionCardComponent
 			step={Number(currentStepData.slug.split('-')[1])}
-			total={data.length}
+			total={filteredData.length}
 			currentStepData={currentStepData}
 			source={source}
 			{...props}

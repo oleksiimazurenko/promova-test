@@ -11,6 +11,7 @@ import {
 	CardTitle,
 } from '@/shared/ui/card'
 import { useRouter } from '@bprogress/next'
+import { Info } from 'lucide-react'
 import PromovaIcon from '~/public/promova-icon.svg'
 import { FromFacebookButton } from './from-facebook-button'
 import { FromInstagramButton } from './from-instagram-button'
@@ -53,6 +54,11 @@ export function MainCard({ className, ...props }: CardProps) {
 					</Button>
 				</CardFooter>
 			</Card>
+			<div className='text-center flex justify-center items-center gap-4 text-lg font-[600] p-3 text-white rounded-2xl bg-gradient-to-tl from-neutral-400 to-neutral-500'>
+				<Info className='min-w-[25px] min-h-[25px]' />
+				Щоб пройти quiz треба запустити strapi в render (хмарна платформа для
+				розгортання веб-додатків)
+			</div>
 			<PromovaIcon className='w-[65px]' />
 		</div>
 	)
