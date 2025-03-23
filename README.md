@@ -47,8 +47,17 @@ npm run build && npm run start
 Create a `.env.local` file and add the following:
 
 ```env
+NEXT_PUBLIC_APP_URL=your_public_url
+
 NEXT_PUBLIC_STRAPI_API_URL=https://your-strapi-url.com
 STRAPI_API_TOKEN=your_strapi_token
+
+SENTRY_AUTH_TOKEN=your_sentry_token
+
+NEXT_PUBLIC_ZUSTAND_PERSIST_SECRET=need_just_generate_some_token
+
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_token
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 
 NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
