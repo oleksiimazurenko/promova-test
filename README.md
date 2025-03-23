@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧠 Promova Test Task – FE Middle Developer
 
-## Getting Started
+> A frontend project designed as a technical test for Promova. This project represents a dynamic, multi-step quiz with conditional logic, analytics tracking, CMS integration, and delightful UX touches.
 
-First, run the development server:
+---
+
+## 📦 Tech Stack
+
+- **Next.js 15 (App Router)**
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS + class-variance-authority**
+- **Zustand** – global state management
+- **Strapi (Self-hosted)** – headless CMS
+- **PostHog** – analytics tracking
+- **Sentry** – error monitoring
+- **Radix UI** – primitives like checkbox, progress
+- **@next/third-parties** – third-party script integration
+- **CryptoJS** – localStorage encryption
+
+---
+
+## 🛠️ Getting Started
+
+### 1. 📥 Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. ▶️ Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. 🔨 Build for Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build && npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🌐 Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file and add the following:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+NEXT_PUBLIC_STRAPI_API_URL=https://your-strapi-url.com
+STRAPI_API_TOKEN=your_strapi_token
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
+NEXT_PUBLIC_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
+NEXT_PUBLIC_META_DATASET_ID=XXXXXXXXX
+```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📋 Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- ✅ Multi-step quiz powered by Strapi
+- 🔁 Conditional logic per step depending on previous answers or `source`
+- 💾 Encrypted localStorage with Zustand
+- 🧠 Source-aware quiz logic via middleware
+- 📊 PostHog integration: `step_viewed`, `quiz_completed`
+- 🧨 Global error boundaries with Sentry
+- ⚡ ISR with revalidate logic (Next.js caching)
+- 💡 Suspense fallback
+
+---
+
+## 🧪 Analytics Setup
+
+### PostHog
+
+- Used for tracking quiz step views and completion
+- Captured events:
+  - `step_viewed`
+  - `quiz_completed`
+
+### Third-Party Scripts via `@next/third-parties`
+
+- **Google Tag Manager**
+- **Google Analytics**
+- **Meta Dataset (Facebook Pixel)**
+
+All dynamically injected into `<head />`
+
+---
+
+## 🧩 Folder Structure (Simplified)
+
+```
+/entities      → quiz components (Card, CheckboxStep)
+/shared        → UI, lib, utils
+/app/quiz	     → quiz pages, ISR logic
+/store         → Zustand quiz logic with encryption
+/actions       → server actions fetching CMS data
+```
+
+---
+
+## 👨‍💻 Author
+
+**Олексій Мазуренко**  
+Developer  
+
+---
+
+## 📎 Notes
+
+- This app uses **Incremental Static Regeneration (ISR)** via `revalidate`.
+- Each step in the quiz is editable from the Strapi admin panel.
+- Quiz is resilient: users can resume from where they left off.
+- Direct access to quiz steps is protected:
+  -- Users cannot jump to a specific step via URL unless they’ve completed the previous steps.
+  -- If a user comes from an external source (e.g. ?source=facebook), they start from a specific step, and cannot go back unless they explicitly choose to go through the full personalization flow.
+
+---

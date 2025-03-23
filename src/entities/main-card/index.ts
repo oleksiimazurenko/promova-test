@@ -1,0 +1,1 @@
+export { MainCard } from './ui/main-card';
