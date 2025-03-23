@@ -85,8 +85,6 @@ NEXT_PUBLIC_META_DATASET_ID=XXXXXXXXX
 - **Google Analytics**
 - **Meta Dataset (Facebook Pixel)**
 
-All dynamically injected into `<head />`
-
 ---
 
 ## 🧩 Folder Structure (Simplified)
