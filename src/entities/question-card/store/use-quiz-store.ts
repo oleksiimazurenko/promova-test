@@ -13,8 +13,10 @@ export type QuizStoreType = {
 	hasHydrated: boolean
 	setHasHydrated: (value: boolean) => void
 
-	currentStep: number
+	setPreviousStep: (value: number) => void
 	previousStep: number
+
+	currentStep: number
 	setCurrentStep: (value: number) => void
 	resetStep: () => void
 
@@ -32,13 +34,15 @@ export const useQuizStore = create<QuizStoreType>()(
 			hasHydrated: false,
 			setHasHydrated: (value: boolean) => set({ hasHydrated: value }),
 
-			currentStep: 1,
+			setPreviousStep: previousStep => set({ previousStep }),
 			previousStep: 1,
+
 			setCurrentStep: value =>
 				set(() => ({
 					previousStep: get().currentStep,
 					currentStep: value,
 				})),
+			currentStep: 1,
 
 			resetStep: () => set({ currentStep: 1, previousStep: 1 }),
 

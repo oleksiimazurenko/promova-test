@@ -1,9 +1,6 @@
 'use client'
 
-import { ArrowLeft, ArrowRight } from 'lucide-react'
-
 import Image from 'next/image'
-import posthog from 'posthog-js'
 
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
@@ -22,12 +19,15 @@ import { Progress } from '@/shared/ui/progress'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { getStepFromSource } from '@/shared/utils/get-step-from-source'
 import { useRouter } from '@bprogress/next'
+import { notFound } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
 import { useSourceRedirect } from '../hooks/use-source-redirect'
 import { useStepGuard } from '../hooks/use-step-guard'
 import { useQuizStore } from '../store/use-quiz-store'
 import { CheckboxStep } from './checkbox-step'
-import { notFound } from 'next/navigation'
+import { FinishButton } from './finish-button'
+import { NextButton } from './next-button'
+import { PrevButton } from './prev-button'
 
 type QuestionCardComponentProps = {
 	step: number
@@ -50,7 +50,6 @@ function QuestionCardComponent({
 		hasHydrated,
 		resetAnswers,
 		previousStep,
-		setCurrentStep,
 		setCameFromSource,
 		resetStep,
 		cameFromSource,
@@ -113,12 +112,17 @@ function QuestionCardComponent({
 			</CardHeader>
 
 			<CardContent className='flex flex-col gap-4 justify-center items-start'>
+				
+				{/* -------------------------- Progress bar -------------------------- */}
 				<div className='flex items-center space-x-4 rounded-md border p-4 w-full'>
 					<Progress
 						value={animatedProgress}
 						className='w-full transition-all duration-500'
 					/>
 				</div>
+				{/* -----------------------------///---///---------------------------- */}
+
+				{/* -------------------------- Photo -------------------------- */}
 				{image?.url ? (
 					<Image
 						src={`${process.env.NEXT_PUBLIC_STRAPI_API_URL}${image?.url}`}
@@ -129,20 +133,29 @@ function QuestionCardComponent({
 					/>
 				) : (
 					<div className='w-full flex justify-center items-center'>
-						Тут мало бути зображення, але щось пішло не так...
+						Зображення ще не додали.
 					</div>
 				)}
+				{/* -----------------------------///---///---------------------------- */}
+
+				{/* -------------------------- Question -------------------------- */}
 				<div className='flex items-center justify-center text-[22px] w-full'>
 					{type === 'single'
 						? 'Обери одну з опцій нижче'
 						: 'Обери декілька опцій нижче'}
 				</div>
+				{/* -----------------------------///---///---------------------------- */}
+
+				{/* -------------------------- Answers -------------------------- */}
 				<CheckboxStep
 					stepId={slug}
 					type={type}
 					items={currentStepData.answers}
 					savedValue={savedValue}
 				/>
+				{/* -----------------------------///---///---------------------------- */}
+
+				{/* -------------------------- Go to all questions -------------------------- */}
 				{startStep === `step-${step}` && cameFromSource && (
 					<Button
 						onClick={() => {
@@ -156,68 +169,27 @@ function QuestionCardComponent({
 						Бажаєте пройти повну персоналізацію?
 					</Button>
 				)}
+				{/* -----------------------------///---///---------------------------- */}
 			</CardContent>
 
 			<CardFooter
 				className={cn('flex justify-between items-center w-full mt-4')}
 			>
-				<div>
-					{step !== 1 && (startStep !== `step-${step}` || !startStep) && (
-						<Button
-							onClick={() => {
-								setCurrentStep(step - 1)
-								router.push(`/quiz/step-${step - 1}`)
-							}}
-						>
-							<ArrowLeft className='mr-1' /> Назад
-						</Button>
-					)}
-				</div>
+				<PrevButton step={step} startStep={startStep} />
 
-				<div>
-					{total !== step && (
-						<Button
-							disabled={isDisabledNextButton}
-							onClick={() => {
-								if (isDisabledNextButton) return null
+				<NextButton
+					total={total}
+					step={step}
+					question={question}
+					savedValue={savedValue}
+					isDisabledNextButton={isDisabledNextButton}
+				/>
 
-								posthog.capture('step_viewed', {
-									step,
-									question,
-									answer: savedValue,
-								})
-
-								router.push(`/quiz/step-${step + 1}`)
-								setCurrentStep(step + 1)
-							}}
-						>
-							Далі <ArrowRight className='ml-1' />
-						</Button>
-					)}
-				</div>
-
-				{total === step && (
-					<div>
-						<Button
-							disabled={isDisabledNextButton}
-							onClick={() => {
-								if (isDisabledNextButton) return null
-
-								resetStep()
-								resetAnswers()
-								//* ----------------------------------------------
-								posthog.capture('quiz_completed', {
-									answers,
-									completedAt: new Date().toISOString(),
-								})
-								//* ----------------------------------------------
-								router.push(`/quiz/result`)
-							}}
-						>
-							Почати! <ArrowRight className='ml-1' />
-						</Button>
-					</div>
-				)}
+				<FinishButton
+					step={step}
+					total={total}
+					isDisabledNextButton={isDisabledNextButton}
+				/>
 			</CardFooter>
 		</Card>
 	)
