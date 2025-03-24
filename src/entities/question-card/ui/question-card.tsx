@@ -19,7 +19,7 @@ import { Progress } from '@/shared/ui/progress'
 import { Skeleton } from '@/shared/ui/skeleton'
 import { getStepFromSource } from '@/shared/utils/get-step-from-source'
 import { useRouter } from '@bprogress/next'
-import { notFound } from 'next/navigation'
+import { notFound, usePathname } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
 import { useSourceRedirect } from '../hooks/use-source-redirect'
 import { useStepGuard } from '../hooks/use-step-guard'
@@ -56,7 +56,7 @@ function QuestionCardComponent({
 	} = useQuizStore()
 
 	const { slug, type, question, image } = currentStepData
-
+	const pathname = usePathname()
 
 	const [animatedProgress, setAnimatedProgress] = useState(
 		Math.round((previousStep / total) * 100)
@@ -81,6 +81,22 @@ function QuestionCardComponent({
 	// * ----------------------------------------------
 
 	useStepGuard(step)
+
+	// * ----------------------------------------------
+	// * ----------------------------------------------
+
+	useEffect(() => {
+		// * на останьому кроці не потрібно передбачати наступний крок
+		if(total === step) return;
+
+		//* передбачення наступного кроку базового направлення
+		router.prefetch(`/quiz/step-${step + 1}`)
+
+		//* передбачення наступного кроку для кожного спеціального направлення
+		currentStepData.answers.forEach(answer => {
+			router.prefetch(`/quiz/${answer.nextStep}`)
+		})
+	}, [pathname]) // eslint-disable-line
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------
@@ -113,7 +129,6 @@ function QuestionCardComponent({
 			</CardHeader>
 
 			<CardContent className='flex flex-col gap-4 justify-center items-start'>
-				
 				{/* -------------------------- Progress bar -------------------------- */}
 				<div className='flex items-center space-x-4 rounded-md border p-4 w-full'>
 					<Progress
