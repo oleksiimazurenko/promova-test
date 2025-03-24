@@ -69,7 +69,7 @@ NEXT_PUBLIC_META_DATASET_ID=XXXXXXXXX
 ## 📋 Features
 
 - ✅ Multi-step quiz powered by Strapi
-<!-- - 🔁 Conditional logic per step depending on previous answers or `source` -->
+<!-- - 🔁 Some steps depend on `source`, but not yet on user's previous answers -->
 - 💾 Encrypted localStorage with Zustand
 - 🧠 Source-aware quiz logic via middleware
 - 📊 PostHog integration: `step_viewed`, `quiz_completed`
