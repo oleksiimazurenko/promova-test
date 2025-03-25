@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuizStore } from '@/entities/question-card/store/use-quiz-store'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 import {
@@ -12,6 +13,7 @@ import {
 } from '@/shared/ui/card'
 import { useRouter } from '@bprogress/next'
 import { Info } from 'lucide-react'
+import { useEffect } from 'react'
 import PromovaIcon from '~/public/promova-icon.svg'
 import { FromFacebookButton } from './from-facebook-button'
 import { FromInstagramButton } from './from-instagram-button'
@@ -22,6 +24,13 @@ type CardProps = React.ComponentProps<typeof Card>
 
 export function MainCard({ className, ...props }: CardProps) {
 	const router = useRouter()
+	const { resetStep, resetAnswers, setCameFromSource } = useQuizStore()
+
+	useEffect(() => {
+		resetStep()
+		resetAnswers()
+		setCameFromSource(null)
+	}, []) // eslint-disable-line
 
 	return (
 		<div className='flex flex-col gap-4 items-center justify-center p-5'>

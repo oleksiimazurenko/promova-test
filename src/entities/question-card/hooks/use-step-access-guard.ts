@@ -19,7 +19,7 @@ export const useStepAccessGuard = (step: string, source: string | null) => {
 			setCameFromSource(source)
 		}
 
-		const startStep = getStepFromSource(cameFromSource) || 'step-1'
+		const startStep = getStepFromSource(cameFromSource || source) || 'step-1'
 
 		if (step.split('-')[1] < startStep.split('-')[1]) {
 			router.push(`/quiz/${startStep}`)
@@ -31,5 +31,6 @@ export const useStepAccessGuard = (step: string, source: string | null) => {
 			router.push(`/quiz/${startStep}`)
 			return
 		}
+		
 	}, [hasHydrated, pathname]) // eslint-disable-line
 }

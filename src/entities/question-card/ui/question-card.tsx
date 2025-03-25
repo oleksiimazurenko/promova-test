@@ -21,12 +21,12 @@ import { getStepFromSource } from '@/shared/utils/get-step-from-source'
 import { useRouter } from '@bprogress/next'
 import { notFound, usePathname } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
+import { useStepAccessGuard } from '../hooks/use-step-access-guard'
 import { useQuizStore } from '../store/use-quiz-store'
 import { CheckboxStep } from './checkbox-step'
 import { FinishButton } from './finish-button'
 import { NextButton } from './next-button'
 import { PrevButton } from './prev-button'
-import { useStepAccessGuard } from '../hooks/use-step-access-guard'
 
 type QuestionCardComponentProps = {
 	step: string
@@ -53,10 +53,10 @@ function QuestionCardComponent({
 		setCameFromSource,
 		resetStep,
 		cameFromSource,
-		previousStep
+		previousStep,
 	} = useQuizStore()
 
-	console.log('answers', answers)
+	// console.log('currentStepData', currentStepData)
 
 	const { slug, type, question, image } = currentStepData
 	const pathname = usePathname()
@@ -71,20 +71,20 @@ function QuestionCardComponent({
 	// * ----------------------------------------------
 	// * ----------------------------------------------
 
-		// створення крока для source від якого прийшли
-		useEffect(() => {
-			// перевірка для того щоб не замінити вже існуючий крок
-			const hasAnsweredStepData = answers.some(answer => answer.step === step)
-			
-			if(!hasAnsweredStepData && cameFromSource && step === cameFromSource) {
-				setAnswer({
-					step,
-					value: null,
-					nextStep: null,
-				})
-			}
+	// створення крока для source від якого прийшли
+	useEffect(() => {
+		// перевірка для того щоб не замінити вже існуючий крок
+		const hasAnsweredStepData = answers.some(answer => answer.step === step)
 
-		}, [step, cameFromSource]) // eslint-disable-line
+		if (!hasAnsweredStepData && cameFromSource && step === cameFromSource) {
+			console.log('create step for source', cameFromSource)
+			setAnswer({
+				step,
+				value: null,
+				nextStep: null,
+			})
+		}
+	}, [step, cameFromSource]) // eslint-disable-line
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------
@@ -96,7 +96,6 @@ function QuestionCardComponent({
 
 	// for animate progress bar
 	useEffect(() => {
-
 		const currentStepIndex = Number(step.split('-')[1])
 		const next = Math.round((currentStepIndex / total) * 100)
 		const timer = setTimeout(() => setAnimatedProgress(next), 50)
@@ -125,6 +124,7 @@ function QuestionCardComponent({
 	const isDisabledNextButton = savedValue === '' || savedValue?.length === 0
 	const startStep = getStepFromSource(cameFromSource)
 
+
 	return (
 		<Card
 			className={cn(
@@ -136,7 +136,8 @@ function QuestionCardComponent({
 			<CardHeader>
 				<CardTitle>{question}</CardTitle>
 				<CardDescription>
-					Ви на кроці {step.split('-')[1]} з {total}. {source && `Ви прийшли з ${source}`}
+					Ви на кроці {step.split('-')[1]} з {total}.{' '}
+					{source && `Ви прийшли з ${source}`}
 					{step === 'step-1' && 'Це ваш перший крок.'}
 				</CardDescription>
 			</CardHeader>
@@ -204,7 +205,6 @@ function QuestionCardComponent({
 			<CardFooter
 				className={cn('flex justify-between items-center w-full mt-4')}
 			>
-
 				<PrevButton step={step} startStep={startStep} />
 
 				<NextButton
@@ -220,7 +220,6 @@ function QuestionCardComponent({
 					lastStep={lastStep}
 					isDisabledNextButton={isDisabledNextButton}
 				/>
-
 			</CardFooter>
 		</Card>
 	)
@@ -238,10 +237,7 @@ export function QuestionCard({
 	source,
 	...props
 }: QuestionCard) {
-	const {
-		hasHydrated,
-	} = useQuizStore()
-
+	const { hasHydrated } = useQuizStore()
 
 	const data = use(promiseAllSteps)
 	if (!data) notFound()
@@ -259,7 +255,10 @@ export function QuestionCard({
 		return aStep - bStep
 	})
 
-	if (!hasHydrated) return <Skeleton className='max-w-[380px] min-[420px]:w-[380px] h-[450px]' />
+	if (!hasHydrated)
+		return (
+			<Skeleton className='max-w-[380px] min-[420px]:w-[380px] h-[450px]' />
+		)
 
 	return (
 		<QuestionCardComponent

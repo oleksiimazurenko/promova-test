@@ -62,7 +62,7 @@ export const useQuizStore = create<QuizStoreType>()(
 					}
 				}),
 			resetAnswers: () =>
-				set({ answers: [{ step: 'step-1', value: '', nextStep: null }] }),
+				set({ answers: [] }),
 		}),
 		{
 			name: 'step-storage',
