@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/quiz-summary/route.ts": {
+      "maxDuration": 200
+    }
+  }
+}
