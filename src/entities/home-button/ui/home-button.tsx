@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 export function HomeButton() {
 	const pathname = usePathname()
-	if (pathname === '/') return null
+	if (pathname === '/' || pathname === '/quiz/result') return null
 
 	return (
 		<Link
