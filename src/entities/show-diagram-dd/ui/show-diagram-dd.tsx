@@ -1,6 +1,7 @@
 'use client'
 
 import { useMediaQuery } from '@/shared/hooks/use-media-query'
+import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 import { Card, CardContent, CardTitle } from '@/shared/ui/card'
 import {
@@ -31,10 +32,7 @@ export function ShowDiagramDD() {
 				<DialogTrigger asChild>
 					<Button variant='outline'>Quiz діаграма</Button>
 				</DialogTrigger>
-				<DialogContent
-					className='sm:max-w-[425px]'
-					onInteractOutside={e => e.preventDefault()}
-				>
+				<DialogContent className='sm:max-w-[425px]'>
 					<DialogHeader>
 						<DialogTitle>Edit profile</DialogTitle>
 					</DialogHeader>
@@ -49,7 +47,7 @@ export function ShowDiagramDD() {
 			<DrawerTrigger asChild>
 				<Button variant='outline'>Quiz діаграма</Button>
 			</DrawerTrigger>
-			<DrawerContent onInteractOutside={e => e.preventDefault()}>
+			<DrawerContent>
 				<DrawerHeader className='text-center text-[22px] flex justify-center items-center'>
 					<DrawerTitle>Quiz кроки пояснення</DrawerTitle>
 				</DrawerHeader>
@@ -67,7 +65,6 @@ export function ShowDiagramContent() {
 			<CardContent className='grid gap-4 md:h-[350px] md:max-h-[500px] md:overflow-y-auto'>
 				<ZoomableImage />
 				<CardTitle>Текстове пояснення логіки переходів:</CardTitle>
-
 				<ol className='list-decimal pl-4 space-y-3 text-sm'>
 					<li>
 						<strong>Основна гілка (main):</strong>
@@ -154,31 +151,105 @@ export function ShowDiagramContent() {
 }
 
 export function ZoomableImage() {
+	const [isLoadedImage, setIsLoadedImage] = useState(false)
 	const [open, setOpen] = useState(false)
+	const isDesktop = useMediaQuery('(min-width: 768px)')
+
+	if (isDesktop) {
+		return (
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogTrigger className='relative flex justify-center items-center'>
+					<Image
+						src='/diagram.png'
+						fill
+						alt='diagram'
+						className={cn(
+							'!relative rounded-md border transition-opacity duration-500 w-full aspect-[16/12] data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-100/10'
+						)}
+						onClick={() => setOpen(true)}
+						data-loaded='false'
+						onLoad={event => {
+							event.currentTarget.setAttribute('data-loaded', 'true')
+						}}
+					/>
+				</DialogTrigger>
+				<DialogContent className='max-w-[90vw] max-h-[90vh] p-4 overflow-hidden'>
+					<DialogHeader className='sr-only'>
+						<DialogTitle>Quiz кроки пояснення</DialogTitle>
+						<DialogDescription>---</DialogDescription>
+					</DialogHeader>
+
+					<div
+						className={cn(
+							'relative w-full aspect-[16/12] overflow-hidden rounded-md',
+							!isLoadedImage && 'animate-pulse bg-gray-200'
+						)}
+					>
+						<TransformWrapper>
+							<TransformComponent>
+								{/* eslint-disable-next-line */}
+								<img
+									src='/diagram.png'
+									alt='diagram'
+									loading='lazy'
+									className={cn('w-full h-full object-contain')}
+									onLoad={() => {
+										console.log('loaded 999999')
+										setIsLoadedImage(true)
+									}}
+								/>
+							</TransformComponent>
+						</TransformWrapper>
+					</div>
+				</DialogContent>
+			</Dialog>
+		)
+	}
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger className='flex justify-center items-center'>
+		<Drawer>
+			<DrawerTrigger>
 				<Image
 					src='/diagram.png'
 					fill
 					alt='diagram'
-					className='!relative cursor-zoom-in rounded-md border'
+					className={cn(
+						'!relative rounded-md border transition-opacity duration-500 w-full aspect-[16/12] data-[loaded=false]:animate-pulse data-[loaded=false]:bg-gray-100/10'
+					)}
 					onClick={() => setOpen(true)}
+					data-loaded='false'
+					onLoad={event => {
+						event.currentTarget.setAttribute('data-loaded', 'true')
+					}}
 				/>
-			</DialogTrigger>
-			<DialogContent className='max-w-[90vw] max-h-[90vh] p-4 overflow-hidden'>
-				<DialogHeader className='sr-only'>
-					<DialogTitle>Quiz кроки пояснення</DialogTitle>
-					<DialogDescription>---</DialogDescription>
-				</DialogHeader>
-				<TransformWrapper>
-					<TransformComponent>
-						{/* eslint-disable-next-line */}
-						<img src='/diagram.png' alt='diagram' />
-					</TransformComponent>
-				</TransformWrapper>
-			</DialogContent>
-		</Dialog>
+			</DrawerTrigger>
+			<DrawerContent>
+				<DrawerHeader className='text-center text-[22px] flex justify-center items-center'>
+					<DrawerTitle>Збільшуйте зображження Quiz кроків</DrawerTitle>
+				</DrawerHeader>
+				<div
+					className={cn(
+						'relative w-full aspect-[16/12] overflow-hidden',
+						!isLoadedImage && 'animate-pulse bg-gray-200'
+					)}
+				>
+					<TransformWrapper>
+						<TransformComponent>
+							{/* eslint-disable-next-line */}
+							<img
+								src='/diagram.png'
+								alt='diagram'
+								loading='lazy'
+								className={cn('w-full h-full object-contain')}
+								onLoad={() => {
+									console.log('loaded 999999')
+									setIsLoadedImage(true)
+								}}
+							/>
+						</TransformComponent>
+					</TransformWrapper>
+				</div>
+			</DrawerContent>
+		</Drawer>
 	)
 }
