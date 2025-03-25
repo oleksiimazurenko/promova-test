@@ -51,7 +51,7 @@ export function ShowDiagramDD() {
 				<DrawerHeader className='text-center text-[22px] flex justify-center items-center'>
 					<DrawerTitle>Quiz кроки пояснення</DrawerTitle>
 				</DrawerHeader>
-				<div className='p-3 overflow-y-auto'>
+				<div className='px-3 py-4 overflow-y-auto vertical-mask'>
 					<ShowDiagramContent />
 				</div>
 			</DrawerContent>
@@ -207,7 +207,7 @@ export function ZoomableImage() {
 	}
 
 	return (
-		<Drawer>
+		<Drawer handleOnly>
 			<DrawerTrigger>
 				<Image
 					src='/diagram.png'

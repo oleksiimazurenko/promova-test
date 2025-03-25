@@ -120,3 +120,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+@utility vertical-mask {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
