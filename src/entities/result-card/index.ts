@@ -1,0 +1,1 @@
+export { ResultCard } from './ui/result-card'

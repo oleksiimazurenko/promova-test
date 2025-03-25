@@ -14,6 +14,7 @@ import {
 	CardTitle,
 } from '@/shared/ui/card'
 
+import { QuestionQuizSummaryType } from '@/app/api/quiz-summary/route'
 import { StepType } from '@/shared/types/global'
 import { Progress } from '@/shared/ui/progress'
 import { Skeleton } from '@/shared/ui/skeleton'
@@ -51,6 +52,7 @@ function QuestionCardComponent({
 		resetAnswers,
 		setCameFromSource,
 		resetStep,
+		setQuestions,
 		cameFromSource,
 		previousStep,
 	} = useQuizStore()
@@ -66,6 +68,18 @@ function QuestionCardComponent({
 	const [animatedProgress, setAnimatedProgress] = useState(
 		Math.round((prevStepIndex / total) * 100)
 	)
+
+	// * ----------------------------------------------
+	// * ----------------------------------------------
+
+	// збираємо дані про питання
+	useEffect(() => {
+		const questionObj: QuestionQuizSummaryType = {
+			slug,
+			question,
+		}
+		setQuestions({ question: questionObj, step: slug })
+	}, [step]) // eslint-disable-line
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------
@@ -119,7 +133,8 @@ function QuestionCardComponent({
 					Ви на кроці {step.split('-')[1]} з {total}.{' '}
 					{cameFromSource && (
 						<span>
-							Ви прийшли з <span className='font-[600] text-black'>{cameFromSource}</span>
+							Ви прийшли з{' '}
+							<span className='font-[600] text-black'>{cameFromSource}</span>
 						</span>
 					)}
 					{step === 'step-1' && 'Це ваш перший крок.'}

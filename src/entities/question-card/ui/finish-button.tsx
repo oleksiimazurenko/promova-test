@@ -19,7 +19,7 @@ export function FinishButton({
 }: FinishButtonProps) {
 	const router = useRouter()
 
-	const { resetStep, resetAnswers, setCameFromSource, answers } = useQuizStore()
+	const { resetStep, answers } = useQuizStore()
 
 	return (
 		lastStep === step && (
@@ -30,8 +30,8 @@ export function FinishButton({
 						if (isDisabledNextButton) return null
 
 						resetStep()
-						resetAnswers()
-						setCameFromSource(null)
+						// resetAnswers()
+						// setCameFromSource(null)
 						//* ----------------------------------------------
 						posthog.capture('quiz_completed', {
 							answers,
