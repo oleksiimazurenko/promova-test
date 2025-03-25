@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuizStore } from '@/entities/question-card/store/use-quiz-store'
+import { ShowDiagramDD } from '@/entities/show-diagram-dd'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/button'
 import {
@@ -47,6 +48,7 @@ export function MainCard({ className, ...props }: CardProps) {
 					<TestErrorButton />
 					<FromFacebookButton />
 					<FromInstagramButton />
+					<ShowDiagramDD />
 				</CardContent>
 
 				<CardFooter>

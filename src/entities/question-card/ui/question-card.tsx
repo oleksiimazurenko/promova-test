@@ -48,7 +48,6 @@ function QuestionCardComponent({
 
 	const {
 		answers,
-		setAnswer,
 		resetAnswers,
 		setCameFromSource,
 		resetStep,
@@ -67,24 +66,6 @@ function QuestionCardComponent({
 	const [animatedProgress, setAnimatedProgress] = useState(
 		Math.round((prevStepIndex / total) * 100)
 	)
-
-	// * ----------------------------------------------
-	// * ----------------------------------------------
-
-	// створення крока для source від якого прийшли
-	useEffect(() => {
-		// перевірка для того щоб не замінити вже існуючий крок
-		const hasAnsweredStepData = answers.some(answer => answer.step === step)
-
-		if (!hasAnsweredStepData && cameFromSource && step === cameFromSource) {
-			console.log('create step for source', cameFromSource)
-			setAnswer({
-				step,
-				value: null,
-				nextStep: null,
-			})
-		}
-	}, [step, cameFromSource]) // eslint-disable-line
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------

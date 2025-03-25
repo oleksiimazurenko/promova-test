@@ -64,7 +64,7 @@ export default function RootLayout({
 						<HomeButton />
 					</main>
 				</Providers>
-				<footer className='flex flex-col gap-2 items-center justify-center font-mono text-sm p-12 '>
+				<footer className='flex flex-col gap-2 items-center justify-center font-mono text-sm p-12 text-center'>
 					<div>Прав немає, нічого не захищено © 2025</div>
 				</footer>
 
