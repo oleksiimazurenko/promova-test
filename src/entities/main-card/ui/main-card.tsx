@@ -6,7 +6,6 @@ import { Button } from '@/shared/ui/button'
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
@@ -40,9 +39,7 @@ export function MainCard({ className, ...props }: CardProps) {
 			>
 				<CardHeader>
 					<CardTitle className='mx-auto text-2xl'>Вітаю!</CardTitle>
-					<CardDescription className='text-lg mx-auto'>
-						Головна сторінка
-					</CardDescription>
+					<PromovaIcon className='w-[65px] mx-auto' />
 				</CardHeader>
 
 				<CardContent className='grid gap-4'>
@@ -61,12 +58,13 @@ export function MainCard({ className, ...props }: CardProps) {
 					</Button>
 				</CardFooter>
 			</Card>
-			<div className='text-center flex justify-center items-center gap-4 text-lg font-[600] p-3 text-white rounded-2xl bg-gradient-to-tl from-neutral-400 to-neutral-500'>
+			<div className='flex flex-col sm:flex-row justify-center items-center gap-4 text-lg font-[600] p-3 text-white rounded-2xl bg-gradient-to-tl from-neutral-400 to-neutral-500'>
 				<Info className='min-w-[25px] min-h-[25px]' />
-				Щоб пройти quiz треба запустити strapi в render (хмарна платформа для
-				розгортання веб-додатків)
+				<p className='text-center w-full'>
+					Щоб пройти quiz треба запустити strapi в render (хмарна платформа для
+					розгортання веб-додатків)
+				</p>
 			</div>
-			<PromovaIcon className='w-[65px]' />
 		</div>
 	)
 }

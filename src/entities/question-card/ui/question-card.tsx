@@ -124,7 +124,6 @@ function QuestionCardComponent({
 	const isDisabledNextButton = savedValue === '' || savedValue?.length === 0
 	const startStep = getStepFromSource(cameFromSource)
 
-
 	return (
 		<Card
 			className={cn(
@@ -137,7 +136,11 @@ function QuestionCardComponent({
 				<CardTitle>{question}</CardTitle>
 				<CardDescription>
 					Ви на кроці {step.split('-')[1]} з {total}.{' '}
-					{source && `Ви прийшли з ${source}`}
+					{cameFromSource && (
+						<span>
+							Ви прийшли з <span className='font-[600] text-black'>{cameFromSource}</span>
+						</span>
+					)}
 					{step === 'step-1' && 'Це ваш перший крок.'}
 				</CardDescription>
 			</CardHeader>
