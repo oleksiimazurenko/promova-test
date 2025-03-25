@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/quiz-summary.js": {
-      "maxDuration": 60
-    }
-  }
-}
