@@ -8,6 +8,7 @@ import { Nunito } from 'next/font/google'
 import Link from 'next/link'
 
 import './globals.css'
+import { Toaster } from '@/shared/ui/sonner'
 
 const nunito = Nunito({
 	subsets: ['latin', 'cyrillic'],
@@ -83,6 +84,8 @@ export default function RootLayout({
 
 				{/* Meta Pixel */}
 				<MetaDataset datasetID={process.env.NEXT_PUBLIC_META_PIXEL_ID!} />
+
+				<Toaster />
 			</body>
 		</html>
 	)

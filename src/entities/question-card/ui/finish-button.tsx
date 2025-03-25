@@ -7,14 +7,14 @@ import posthog from 'posthog-js'
 import { useQuizStore } from '../store/use-quiz-store'
 
 type FinishButtonProps = {
-	step: number
-	total: number
+	step: string
+	lastStep: string
 	isDisabledNextButton: boolean
 }
 
 export function FinishButton({
 	step,
-	total,
+	lastStep,
 	isDisabledNextButton,
 }: FinishButtonProps) {
 	const router = useRouter()
@@ -22,7 +22,7 @@ export function FinishButton({
 	const { resetStep, resetAnswers, answers } = useQuizStore()
 
 	return (
-		total === step && (
+		lastStep === step && (
 			<div>
 				<Button
 					disabled={isDisabledNextButton}

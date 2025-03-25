@@ -6,22 +6,26 @@ import { ArrowLeft } from 'lucide-react'
 import { useQuizStore } from '../store/use-quiz-store'
 
 type PrevButtonProps = {
-	step: number
+	step: string
 	startStep: string | null
 }
 
 export function PrevButton({ startStep, step }: PrevButtonProps) {
 	const router = useRouter()
 
-	const { setCurrentStep } = useQuizStore()
+	const { setCurrentStep, answers } = useQuizStore()
 
 	return (
 		<div>
-			{step !== 1 && (startStep !== `step-${step}` || !startStep) && (
+			{step !== 'step-1' && (startStep !== step || !startStep) && (
 				<Button
 					onClick={() => {
-						setCurrentStep(step - 1)
-						router.push(`/quiz/step-${step - 1}`)
+
+						const currentStepIndex = answers.findIndex(answer => answer.step === step)
+						const prevStep = answers[currentStepIndex - 1].step
+
+						setCurrentStep(prevStep)
+						router.push(`/quiz/${prevStep}`)
 					}}
 				>
 					<ArrowLeft className='mr-1' /> Назад

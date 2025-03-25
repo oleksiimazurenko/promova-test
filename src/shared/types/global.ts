@@ -1,3 +1,5 @@
+
+
 export type StepType = {
   id: number
   documentId: string
@@ -14,6 +16,12 @@ export type StepType = {
 export type AnswerType = {
   id: number
   value: string
+  nextStep: string | null
+}
+
+export type AnswerFromUser = {
+  step: string
+  value: string | string[] | null
   nextStep: string | null
 }
 

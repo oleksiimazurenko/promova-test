@@ -9,13 +9,13 @@ export default function Loading() {
 			<Card className={cn('max-w-[380px] sm:w-[380px] opacity-100! z-2')}>
 				<CardHeader>
 					<CardTitle className='mx-auto text-center text-sm md:text-lg'>
-						Suspense з затримкою promise (3 с)
+						Suspense
 					</CardTitle>
 				</CardHeader>
 
 				<CardContent className='flex gap-4'>
 					<p className='text-[12px] md:text-sm font-semibold leading-none mx-auto'>
-						Зачекайте, Mock дані завантажуються...
+						Зачекайте... Інформація завантажується
 					</p>
 				</CardContent>
 			</Card>

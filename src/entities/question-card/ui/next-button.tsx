@@ -1,6 +1,6 @@
 'use client'
 
-import { StepType } from '@/shared/types/global'
+import { AnswerFromUser, StepType } from '@/shared/types/global'
 import { Button } from '@/shared/ui/button'
 import { useRouter } from '@bprogress/next'
 import { ArrowRight } from 'lucide-react'
@@ -8,53 +8,58 @@ import posthog from 'posthog-js'
 import { useQuizStore } from '../store/use-quiz-store'
 
 type NextButtonProps = {
-	total: number
-	step: number
+	step: string
+	lastStep: string
 	isDisabledNextButton: boolean
-	savedValue: string | string[]
+	savedAnswer: AnswerFromUser | null
 	currentStepData: StepType
 }
 
 export function NextButton({
-	total,
 	step,
-	savedValue,
+	lastStep,
+	savedAnswer,
 	isDisabledNextButton,
 	currentStepData,
 }: NextButtonProps) {
 	const router = useRouter()
 
-	const { setCurrentStep, answers } = useQuizStore()
+	const { setCurrentStep, setAnswer, answers } = useQuizStore()
 
-	const {
-		slug,
-		type,
-		question,
-		answers: answersOfCurrentStep,
-	} = currentStepData
-
-	const nextSpecialStep = answersOfCurrentStep.find(answer => {
-		if (type === 'single') return answer.value === answers[slug]
-		return answers[slug]?.includes(answer.value)
-	})?.nextStep
-	console.log('nextSpecialStep', nextSpecialStep)
+	const { question } = currentStepData
 
 	return (
 		<div>
-			{total !== step && (
+			{lastStep !== step && (
 				<Button
 					disabled={isDisabledNextButton}
 					onClick={() => {
 						if (isDisabledNextButton) return null
+						if (!savedAnswer) {
+							console.error('savedAnswer is null')
+							return null
+						}
 
 						posthog.capture('step_viewed', {
 							step,
 							question,
-							answer: savedValue,
+							answer: savedAnswer,
 						})
 
-						router.push(`/quiz/step-${step + 1}`)
-						setCurrentStep(step + 1)
+						const currentStepData = answers.find(answer => answer.step === step)
+						const hasNextStep = answers.some(answer => answer.step === currentStepData?.nextStep) 
+
+						router.push(`/quiz/${currentStepData?.nextStep ?? 'step-1'}`)
+
+						if(!hasNextStep){
+							setAnswer({
+								step: savedAnswer?.nextStep ?? 'step-1',
+								value: null,
+								nextStep: null,
+							})
+						}
+						
+						setCurrentStep(savedAnswer?.nextStep ?? 'step-1')
 					}}
 				>
 					Далі <ArrowRight className='ml-1' />

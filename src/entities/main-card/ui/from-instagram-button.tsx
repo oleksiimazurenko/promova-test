@@ -15,15 +15,17 @@ export function FromInstagramButton() {
 				const step = sourceToStepMap['instagram']
 
 				//! Щоб не дьоргвся прогресс баг коли одразу падаємо на 4 крок, але зараза все рівно щось викобелюється :З
-				setCurrentStep(Number(step.split('-')[1]))
-				setPreviousStep(Number(step.split('-')[1]))
+				setCurrentStep(step)
+				setPreviousStep(step)
 
 				router.push(`${process.env.NEXT_PUBLIC_APP_URL}/quiz?source=instagram`)
 			}}
 			variant='default'
 		>
 			<div className='flex-1 space-y-1'>
-				<p className='text-[16px] font-semibold leading-none'>Перехід з Instagram</p>
+				<p className='text-[16px] font-semibold leading-none'>
+					Перехід з Instagram
+				</p>
 			</div>
 		</Button>
 	)

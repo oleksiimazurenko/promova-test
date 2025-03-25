@@ -1,7 +1,4 @@
-type AnswerMap = {
-	[step: string]: string | string[]
-}
-
+import { AnswerFromUser } from '@/shared/types/global'
 import { encryptedStorage } from '@/shared/utils/encrypted-storage'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -13,15 +10,15 @@ export type QuizStoreType = {
 	hasHydrated: boolean
 	setHasHydrated: (value: boolean) => void
 
-	setPreviousStep: (value: number) => void
-	previousStep: number
+	setPreviousStep: (value: string) => void
+	previousStep: string
 
-	currentStep: number
-	setCurrentStep: (value: number) => void
+	currentStep: string
+	setCurrentStep: (value: string) => void
 	resetStep: () => void
 
-	answers: AnswerMap
-	setAnswer: (step: string, value: string | string[]) => void
+	answers: AnswerFromUser[]
+	setAnswer: (params: AnswerFromUser) => void
 	resetAnswers: () => void
 }
 
@@ -35,23 +32,37 @@ export const useQuizStore = create<QuizStoreType>()(
 			setHasHydrated: (value: boolean) => set({ hasHydrated: value }),
 
 			setPreviousStep: previousStep => set({ previousStep }),
-			previousStep: 1,
+			previousStep: 'step-1',
 
 			setCurrentStep: value =>
 				set(() => ({
 					previousStep: get().currentStep,
 					currentStep: value,
 				})),
-			currentStep: 1,
+			currentStep: 'step-1',
 
-			resetStep: () => set({ currentStep: 1, previousStep: 1 }),
+			resetStep: () => set({ currentStep: 'step-1', previousStep: 'step-1' }),
 
-			answers: {},
-			setAnswer: (step, value) =>
-				set(state => ({
-					answers: { ...state.answers, [step]: value },
-				})),
-			resetAnswers: () => set({ answers: {} }),
+			answers: [],
+			setAnswer: ({ step, value, nextStep }) =>
+				set(state => {
+					// remove all answers with the same step
+					const filtered = state.answers.filter(entry => entry.step.split('-')[1] !== step.split('-')[1])
+
+					// add the new answer and sort the array
+					const newAnswers = [...filtered, { step, value, nextStep }].sort((a, b) => {
+						const aStep = parseInt(a.step.split('-')[1])
+						const bStep = parseInt(b.step.split('-')[1])
+						return aStep - bStep
+					})
+
+					
+					return {
+						answers: newAnswers,
+					}
+				}),
+			resetAnswers: () =>
+				set({ answers: [{ step: 'step-1', value: '', nextStep: null }] }),
 		}),
 		{
 			name: 'step-storage',

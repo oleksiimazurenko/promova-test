@@ -1,41 +1,47 @@
 'use client'
 
-import { AnswerType } from '@/shared/types/global'
+import { AnswerFromUser, AnswerType } from '@/shared/types/global'
 import { Checkbox } from '@/shared/ui/checkbox'
 import { Label } from '@/shared/ui/label'
-import { useEffect, useState } from 'react'
 import { useQuizStore } from '../store/use-quiz-store'
+
 
 type SelectionType = 'single' | 'multiple'
 
 type Props = {
-	stepId: string
+	step: string
 	type: SelectionType
 	items: AnswerType[]
-	savedValue: string | string[]
+	savedAnswer: AnswerFromUser | null
 }
 
 export function CheckboxStep({
-	stepId,
+	step,
 	type = 'multiple',
 	items,
-	savedValue,
+	savedAnswer,
 }: Props) {
 	const { setAnswer, hasHydrated } = useQuizStore()
-	const [value, setValue] = useState<string[] | string>(savedValue)
 
-	useEffect(() => {
-		setAnswer(stepId, value)
-	}, [value, stepId, setAnswer])
-
-	const handleChange = (checked: boolean, itemValue: string) => {
+	const handleChange = (checked: boolean, item: AnswerType) => {
 		if (type === 'multiple') {
-			const list = value as string[]
-			setValue(
-				checked ? [...list, itemValue] : list.filter(v => v !== itemValue)
-			)
+
+			const list = (savedAnswer?.value as string[]) || []
+
+			const updated = checked
+				? [...list, item.value]
+				: list.filter(v => v !== item.value)
+
+			setAnswer({ step, value: updated, nextStep: item.nextStep || null })
+
 		} else {
-			setValue(checked ? itemValue : '')
+
+			setAnswer({
+				step,
+				value: checked ? item.value : '',
+				nextStep: item.nextStep || null,
+			})
+
 		}
 	}
 
@@ -43,22 +49,28 @@ export function CheckboxStep({
 
 	return (
 		<div className='space-y-4'>
+
 			{items.map(item => {
 				const checked =
 					type === 'multiple'
-						? (value as string[]).includes(item.value)
-						: value === item.value
+						? (savedAnswer?.value as string[])?.includes(item.value)
+						: savedAnswer?.value === item.value
 
 				return (
-					<Label key={item.id} className='flex items-center space-x-3 w-max cursor-pointer'>
+					<Label
+						key={item.id}
+						className='flex items-center space-x-3 w-max cursor-pointer'
+					>
 						<Checkbox
 							checked={checked}
-							onCheckedChange={checked => handleChange(!!checked, item.value)}
+							onCheckedChange={checked => handleChange(!!checked, item)}
+							className='cursor-pointer'
 						/>
 						<div>{item.value}</div>
 					</Label>
 				)
 			})}
+
 		</div>
 	)
 }

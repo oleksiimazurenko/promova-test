@@ -2,6 +2,7 @@
 
 import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+import { toast } from 'sonner'
 
 export default function Page() {
 	return (
@@ -35,6 +36,7 @@ export default function Page() {
 					margin: '18px',
 				}}
 				onClick={async () => {
+					toast.error("Sentry Example Frontend Error.")
 					await Sentry.startSpan(
 						{
 							name: 'Example Frontend Span',
@@ -47,7 +49,9 @@ export default function Page() {
 							}
 						}
 					)
+					
 				}}
+				className='hover:scale-[1.01] transition-transform'
 			>
 				Надіслати зразок помилки
 			</button>

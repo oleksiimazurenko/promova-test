@@ -17,7 +17,6 @@ import { FromFacebookButton } from './from-facebook-button'
 import { FromInstagramButton } from './from-instagram-button'
 import { TestErrorButton } from './test-error-button'
 import { TestSentryButton } from './test-sentry-button'
-import { TestStreamingButton } from './test-striaming-button'
 
 type CardProps = React.ComponentProps<typeof Card>
 
@@ -25,7 +24,7 @@ export function MainCard({ className, ...props }: CardProps) {
 	const router = useRouter()
 
 	return (
-		<div className='flex flex-col gap-4 items-center justify-center'>
+		<div className='flex flex-col gap-4 items-center justify-center p-5'>
 			<Card
 				className={cn('w-max max-w-full sm:w-[380px]', className)}
 				{...props}
@@ -40,7 +39,6 @@ export function MainCard({ className, ...props }: CardProps) {
 				<CardContent className='grid gap-4'>
 					<TestSentryButton />
 					<TestErrorButton />
-					<TestStreamingButton />
 					<FromFacebookButton />
 					<FromInstagramButton />
 				</CardContent>

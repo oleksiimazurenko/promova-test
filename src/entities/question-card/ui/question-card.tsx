@@ -21,24 +21,25 @@ import { getStepFromSource } from '@/shared/utils/get-step-from-source'
 import { useRouter } from '@bprogress/next'
 import { notFound, usePathname } from 'next/navigation'
 import { use, useEffect, useState } from 'react'
-import { useSourceRedirect } from '../hooks/use-source-redirect'
-import { useStepGuard } from '../hooks/use-step-guard'
 import { useQuizStore } from '../store/use-quiz-store'
 import { CheckboxStep } from './checkbox-step'
 import { FinishButton } from './finish-button'
 import { NextButton } from './next-button'
 import { PrevButton } from './prev-button'
+import { useStepAccessGuard } from '../hooks/use-step-access-guard'
 
 type QuestionCardComponentProps = {
-	step: number
-	total: number
+	step: string
+	sortedData: StepType[]
+	lastStep: string
 	source: string | null
 	currentStepData: StepType
 } & React.ComponentProps<typeof Card>
 
 function QuestionCardComponent({
 	step,
-	total,
+	sortedData,
+	lastStep,
 	source,
 	currentStepData,
 	...props
@@ -47,32 +48,57 @@ function QuestionCardComponent({
 
 	const {
 		answers,
-		hasHydrated,
+		setAnswer,
 		resetAnswers,
-		previousStep,
 		setCameFromSource,
 		resetStep,
 		cameFromSource,
+		previousStep
 	} = useQuizStore()
+
+	console.log('answers', answers)
 
 	const { slug, type, question, image } = currentStepData
 	const pathname = usePathname()
 
+	const total = sortedData.length
+
+	const prevStepIndex = Number(previousStep.split('-')[1])
 	const [animatedProgress, setAnimatedProgress] = useState(
-		Math.round((previousStep / total) * 100)
+		Math.round((prevStepIndex / total) * 100)
 	)
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------
 
-	useSourceRedirect(step, source)
+		// створення крока для source від якого прийшли
+		useEffect(() => {
+			// перевірка для того щоб не замінити вже існуючий крок
+			const hasAnsweredStepData = answers.some(answer => answer.step === step)
+			
+			if(!hasAnsweredStepData && cameFromSource && step === cameFromSource) {
+				setAnswer({
+					step,
+					value: null,
+					nextStep: null,
+				})
+			}
+
+		}, [step, cameFromSource]) // eslint-disable-line
+
+	// * ----------------------------------------------
+	// * ----------------------------------------------
+
+	useStepAccessGuard(step, source)
 
 	// * ----------------------------------------------
 	// * ----------------------------------------------
 
 	// for animate progress bar
 	useEffect(() => {
-		const next = Math.round((step / total) * 100)
+
+		const currentStepIndex = Number(step.split('-')[1])
+		const next = Math.round((currentStepIndex / total) * 100)
 		const timer = setTimeout(() => setAnimatedProgress(next), 50)
 		return () => clearTimeout(timer)
 	}, [step, total])
@@ -80,19 +106,11 @@ function QuestionCardComponent({
 	// * ----------------------------------------------
 	// * ----------------------------------------------
 
-	useStepGuard(step)
-
-	// * ----------------------------------------------
-	// * ----------------------------------------------
-
 	useEffect(() => {
 		// * на останьому кроці не потрібно передбачати наступний крок
-		if(total === step) return;
+		if (total === answers.length) return
 
-		//* передбачення наступного кроку базового направлення
-		router.prefetch(`/quiz/step-${step + 1}`)
-
-		//* передбачення наступного кроку для кожного спеціального направлення
+		//* передбачення наступного кроку
 		currentStepData.answers.forEach(answer => {
 			router.prefetch(`/quiz/${answer.nextStep}`)
 		})
@@ -101,15 +119,10 @@ function QuestionCardComponent({
 	// * ----------------------------------------------
 	// * ----------------------------------------------
 
-	if (!hasHydrated)
-		return (
-			<Skeleton className='max-w-[380px] min-[420px]:w-[380px] h-[450px]' />
-		)
+	const savedAnswer = answers.find(a => a.step === slug)
+	const savedValue = savedAnswer?.value ?? (type === 'multiple' ? [] : '')
 
-	const savedValue = answers[slug] || (type === 'multiple' ? [] : '')
-
-	const isDisabledNextButton = savedValue === '' || savedValue.length === 0
-
+	const isDisabledNextButton = savedValue === '' || savedValue?.length === 0
 	const startStep = getStepFromSource(cameFromSource)
 
 	return (
@@ -123,8 +136,8 @@ function QuestionCardComponent({
 			<CardHeader>
 				<CardTitle>{question}</CardTitle>
 				<CardDescription>
-					Ви на кроці {step} з {total}. {source && `Ви прийшли з ${source}`}
-					{step === 1 && 'Це ваш перший крок.'}
+					Ви на кроці {step.split('-')[1]} з {total}. {source && `Ви прийшли з ${source}`}
+					{step === 'step-1' && 'Це ваш перший крок.'}
 				</CardDescription>
 			</CardHeader>
 
@@ -164,15 +177,15 @@ function QuestionCardComponent({
 
 				{/* -------------------------- Answers -------------------------- */}
 				<CheckboxStep
-					stepId={slug}
+					step={slug}
 					type={type}
 					items={currentStepData.answers}
-					savedValue={savedValue}
+					savedAnswer={savedAnswer || null}
 				/>
 				{/* -----------------------------///---///---------------------------- */}
 
 				{/* -------------------------- Go to all questions -------------------------- */}
-				{startStep === `step-${step}` && cameFromSource && (
+				{startStep === step && cameFromSource && (
 					<Button
 						onClick={() => {
 							resetStep()
@@ -191,21 +204,23 @@ function QuestionCardComponent({
 			<CardFooter
 				className={cn('flex justify-between items-center w-full mt-4')}
 			>
+
 				<PrevButton step={step} startStep={startStep} />
 
 				<NextButton
-					total={total}
 					step={step}
-					savedValue={savedValue}
+					lastStep={lastStep}
+					savedAnswer={savedAnswer || null}
 					isDisabledNextButton={isDisabledNextButton}
 					currentStepData={currentStepData}
 				/>
 
 				<FinishButton
 					step={step}
-					total={total}
+					lastStep={lastStep}
 					isDisabledNextButton={isDisabledNextButton}
 				/>
+
 			</CardFooter>
 		</Card>
 	)
@@ -223,19 +238,34 @@ export function QuestionCard({
 	source,
 	...props
 }: QuestionCard) {
+	const {
+		hasHydrated,
+	} = useQuizStore()
+
+
 	const data = use(promiseAllSteps)
 	if (!data) notFound()
-
-	// filter out the _b steps
-	const filteredData = data.filter(stepData => !/_b/.test(stepData.slug))
 
 	const currentStepData = data.find(stepData => stepData.slug === step)
 	if (!currentStepData) notFound()
 
+	// filter only main steps
+	const filteredData = data.filter(stepData => /step-/.test(stepData.slug))
+
+	// sort steps by step number, because they can be not in order
+	const sortedData = filteredData.sort((a, b) => {
+		const aStep = parseInt(a.slug.split('-')[1])
+		const bStep = parseInt(b.slug.split('-')[1])
+		return aStep - bStep
+	})
+
+	if (!hasHydrated) return <Skeleton className='max-w-[380px] min-[420px]:w-[380px] h-[450px]' />
+
 	return (
 		<QuestionCardComponent
-			step={Number(currentStepData.slug.split('-')[1])}
-			total={filteredData.length}
+			step={currentStepData.slug}
+			sortedData={sortedData}
+			lastStep={sortedData[sortedData.length - 1].slug}
 			currentStepData={currentStepData}
 			source={source}
 			{...props}

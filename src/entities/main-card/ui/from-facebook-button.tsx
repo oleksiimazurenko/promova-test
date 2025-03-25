@@ -15,8 +15,8 @@ export function FromFacebookButton() {
 				const step = sourceToStepMap['facebook']
 
 				//! Щоб не дьоргвся прогресс баг коли одразу падаємо на 4 крок, але зараза все рівно щось викобелюється :З
-				setCurrentStep(Number(step.split('-')[1]))
-				setPreviousStep(Number(step.split('-')[1]))
+				setCurrentStep(step)
+				setPreviousStep(step)
 
 				router.push(`${process.env.NEXT_PUBLIC_APP_URL}/quiz?source=facebook`)
 			}}
